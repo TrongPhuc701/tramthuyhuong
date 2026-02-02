@@ -218,7 +218,7 @@
     </section>
 
     <!-- PRODUCT SHOWCASE -->
-   <!-- PRODUCT SHOWCASE -->
+  <!-- PRODUCT SHOWCASE -->
     <section id="san-pham" class="py-24 bg-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 reveal">
@@ -230,53 +230,47 @@
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- SẢN PHẨM 1: VÒNG TAY -->
                 <div class="group reveal cursor-pointer">
-                    <!-- Ảnh sản phẩm 1: sp_vongtay.jpg -->
                     <div class="relative overflow-hidden rounded-lg mb-4 h-[350px] bg-cover bg-center transition duration-500 group-hover:scale-105" 
                          style="background-image: url('sp_vongtay.png');">
-                        <!-- Lớp phủ mờ khi di chuột -->
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition z-10"></div>
-                        <!-- Nhãn Best Seller -->
                         <span class="absolute top-4 left-4 bg-[#C5A059] text-white text-xs font-bold px-3 py-1 uppercase tracking-wide z-20">Best Seller</span>
                     </div>
                     <div class="text-center">
-                        <!-- TÊN SẢN PHẨM 1 -->
                         <h3 class="text-xl serif font-bold mb-1 group-hover:text-[#C5A059] transition">Vòng Trầm 108 Hạt - Tĩnh Tâm</h3>
                         <p class="text-gray-500 text-sm mb-3">Chế tác từ Trầm tự nhiên: vòng tay, mặt dây chuyền, nhẫn, mix charm.....</p>
-                        <!-- GIÁ TIỀN -->
                         <p class="text-[#C5A059] font-bold text-lg mb-4">Giá Từ 1.300.000₫</p>
-                        <button class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
+                        <!-- Đã thêm onclick -->
+                        <button onclick="scrollToOrder('Vòng tay Trầm Hương')" class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
                     </div>
                 </div>
 
                 <!-- SẢN PHẨM 2: NHANG NỤ -->
                 <div class="group reveal delay-100 cursor-pointer">
-                    <!-- Ảnh sản phẩm 2: sp_nhangnu.jpg -->
                     <div class="relative overflow-hidden rounded-lg mb-4 h-[350px] bg-cover bg-center transition duration-500 group-hover:scale-105" 
                          style="background-image: url('sp_nhangnu.png');">
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition z-10"></div>
                     </div>
                     <div class="text-center">
-                        <!-- TÊN SẢN PHẨM 2 -->
                         <h3 class="text-xl serif font-bold mb-1 group-hover:text-[#C5A059] transition">Trầm Xông Đốt</h3>
                         <p class="text-gray-500 text-sm mb-3">Làm từ Trầm tự nhiên: nụ trầm, vân mây, nhang thắp Phật, nhang vòng thuần tự nhiên</p>
                         <p class="text-[#C5A059] font-bold text-lg mb-4">Giá Từ 300.000₫</p>
-                        <button class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
+                        <!-- Đã thêm onclick -->
+                        <button onclick="scrollToOrder('Nhang/Nụ Trầm')" class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
                     </div>
                 </div>
 
                 <!-- SẢN PHẨM 3: TƯỢNG CẢNH -->
                 <div class="group reveal delay-200 cursor-pointer">
-                    <!-- Ảnh sản phẩm 3: tuongcanh.png -->
                     <div class="relative overflow-hidden rounded-lg mb-4 h-[350px] bg-cover bg-center transition duration-500 group-hover:scale-105" 
                          style="background-image: url('tuongcanh.png');">
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition z-10"></div>
                     </div>
                     <div class="text-center">
-                        <!-- TÊN SẢN PHẨM 3 -->
                         <h3 class="text-xl serif font-bold mb-1 group-hover:text-[#C5A059] transition">Tượng Cảnh</h3>
                         <p class="text-gray-500 text-sm mb-3">Sản phẩm đục thủ công theo yêu cầu. Trưng bàn làm việc, phòng khách, nơi thờ cúng. Tạo năng lượng khí dương, phong thủy.</p>
                         <p class="text-[#C5A059] font-bold text-lg mb-4">Giá Liên Hệ</p>
-                        <button class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
+                        <!-- Đã thêm onclick -->
+                        <button onclick="scrollToOrder('Tư vấn Phong Thủy')" class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
                     </div>
                 </div>
             </div>
@@ -573,6 +567,22 @@
 
     <!-- Scripts -->
     <script>
+        // --- HÀM ĐIỀU HƯỚNG VÀ CHỌN SẢN PHẨM ---
+function scrollToOrder(productName) {
+    // 1. Tìm ô chọn sản phẩm (dựa vào thuộc tính name="san_pham")
+    const productSelect = document.querySelector('select[name="san_pham"]');
+    
+    // 2. Gán giá trị sản phẩm vào ô chọn
+    if (productSelect) {
+        productSelect.value = productName;
+    }
+    
+    // 3. Tìm phần liên hệ và cuộn xuống
+    const contactSection = document.getElementById('lien-he');
+    if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
         // --- GOOGLE SHEET INTEGRATION ---
         // BƯỚC QUAN TRỌNG: Thay thế URL bên dưới bằng Web App URL của bạn sau khi deploy Apps Script
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-O63FyYH6GEOnQBG-z7wRg00apSl1jcB7V-Xq01VjIRoRw_Y4FgsdLTcStIzgrmKRKQ/exec";
@@ -816,6 +826,7 @@
 </body>
 
 </html>
+
 
 
 
