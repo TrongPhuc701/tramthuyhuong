@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trầm Thủy Hương - Thuần Khiết, Tĩnh Lặng, Bình An</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Palette: "Zen Luxury"
+        Primary: #5D4037 (Nâu Trầm)
+        Accent: #C5A059 (Vàng Trầm - Gold)
+        Bg-Light: #FFFCF5 (Giấy Điệp)
+        Text-Dark: #2D2420
+    -->
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #FFFCF5;
+            color: #2D2420;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #C5A059, #8D6E63);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.4);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* AI Glow Effect */
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.2);
+            animation: pulse-glow 3s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(197, 160, 89, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(197, 160, 89, 0.5); }
+            100% { box-shadow: 0 0 15px rgba(197, 160, 89, 0.2); }
+        }
+        
+        .markdown-content strong { color: #5D4037; font-weight: 700; }
+        .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        /* Custom Font Class for Wishes */
+        .wish-font {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 600;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Sticky Header -->
+    <header id="header" class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-2">
+                <i class="fa-solid fa-water text-[#5D4037] text-2xl"></i>
+                <span class="text-xl font-bold serif tracking-wider text-[#5D4037]">TRẦM THỦY HƯƠNG</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-600">
+                <a href="#cau-chuyen" class="hover:text-[#C5A059] transition">Câu Chuyện</a>
+                <a href="#san-pham" class="hover:text-[#C5A059] transition">Sản Phẩm</a>
+                <!-- UPDATED: AI Name -->
+                <a href="#tu-van-ai" class="hover:text-[#C5A059] transition flex items-center gap-1"><i class="fa-solid fa-wand-magic-sparkles text-[#C5A059]"></i> Tử Vi AI</a>
+                <a href="#loi-chuc-ai" class="hover:text-[#C5A059] transition flex items-center gap-1"><i class="fa-solid fa-feather-pointed text-[#C5A059]"></i> Lời Chúc</a>
+                <a href="#dau-tu" class="hover:text-[#C5A059] transition">Giá Trị</a>
+                <a href="#lien-he" class="btn-primary ml-4">Liên Hệ Ngay</a>
+            </nav>
+
+            <button class="md:hidden text-[#5D4037]" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t p-4 absolute w-full shadow-lg">
+            <div class="flex flex-col gap-4 text-center">
+                <a href="#cau-chuyen" class="py-2" onclick="toggleMenu()">Câu Chuyện</a>
+                <a href="#san-pham" class="py-2" onclick="toggleMenu()">Sản Phẩm</a>
+                <a href="#tu-van-ai" class="py-2 text-[#C5A059] font-semibold" onclick="toggleMenu()">✨ Tử Vi AI</a>
+                <a href="#loi-chuc-ai" class="py-2 text-[#C5A059] font-semibold" onclick="toggleMenu()">🪶 Lời Chúc</a>
+                <a href="#dau-tu" class="py-2" onclick="toggleMenu()">Giá Trị</a>
+                <a href="#lien-he" class="text-[#C5A059] font-bold py-2" onclick="toggleMenu()">Liên Hệ</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#2D2420]">
+        <div class="absolute inset-0 bg-[url('https://drive.google.com/uc?export=view&id=1yRY_tzlXrlTi1AgcEJrKODOfwRmruWjm')] bg-cover bg-center opacity-80"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#2D2420] via-transparent to-transparent"></div>
+        
+        <div class="relative container mx-auto px-6 text-center text-white z-10 mt-16">
+            <h1 class="text-5xl md:text-7xl serif font-bold mb-6 leading-tight drop-shadow-lg text-shadow">
+                TRẦM THỦY HƯƠNG
+            </h1>
+            <div class="flex items-center justify-center gap-4 mb-8">
+                <div class="h-[1px] w-12 bg-[#C5A059]"></div>
+                <p class="text-[#C5A059] uppercase tracking-[0.2em] text-sm md:text-lg font-semibold animate-fade-down drop-shadow-md bg-black/30 px-4 py-1 rounded">
+                    Thuần Khiết - Tĩnh Lặng - Bình An
+                </p>
+                <div class="h-[1px] w-12 bg-[#C5A059]"></div>
+            </div>
+            
+            <p class="text-gray-100 max-w-2xl mx-auto mb-10 text-lg font-light leading-relaxed drop-shadow-md text-shadow">
+                Tìm về sự cân bằng trong tâm hồn qua làn hương thanh khiết từ đất trời.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#san-pham" class="btn-primary text-lg px-8 py-4">Khám Phá Bộ Sưu Tập</a>
+                <!-- UPDATED: Button Text -->
+                <a href="#tu-van-ai" class="border border-white/50 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold transition backdrop-blur-md flex items-center justify-center gap-2 shadow-lg"><i class="fa-solid fa-wand-magic-sparkles"></i> Tử Vi AI</a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white/50">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- STORY SECTION -->
+    <section id="cau-chuyen" class="py-20 bg-[#F5F5F5] overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 reveal">
+                    <div class="relative bg-[#5D4037] rounded-tr-[100px] rounded-bl-[100px] p-2 shadow-2xl">
+                        <div class="border-2 border-[#C5A059] rounded-tr-[90px] rounded-bl-[90px] p-10 h-[450px] flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1590735213920-68192a487c6b?q=80&w=2070&auto=format&fit=crop')] bg-cover opacity-90">
+                            <div class="bg-black/60 p-6 text-center rounded border border-[#C5A059]/30 backdrop-blur-sm">
+                                <!-- UPDATED: Story Image Text -->
+                                <span class="block text-[#C5A059] text-3xl font-bold serif mb-2">Linh Mộc</span>
+                                <span class="text-white text-xs uppercase tracking-widest">Kết Tinh Trời Đất</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 reveal delay-200">
+                    <span class="text-[#C5A059] font-bold tracking-widest text-sm uppercase mb-2 block">Góc Nhìn Khác Biệt</span>
+                    <h2 class="text-2xl md:text-3xl serif font-bold mb-6 text-[#2D2420] leading-snug">Tại sao lại là Trầm Hương mà không phải là sản phẩm tâm linh nào khác?</h2>
+                    
+                    <p class="text-gray-600 mb-6 leading-relaxed text-justify">
+                        Đá quý thì lạnh lẽo, vàng bạc thì phô trương. Chỉ có <strong>Trầm Hương</strong> mới mang trong mình "nhịp đập" của sự sống. Không giống như những vật phẩm vô tri, Trầm Hương thay đổi theo thân nhiệt và năng lượng của người đeo.
+                    </p>
+                    <p class="text-gray-600 mb-8 leading-relaxed text-justify">
+                        Khi bạn an yên, hương trầm dịu nhẹ thoang thoảng. Khi bạn căng thẳng, hơi ấm cơ thể khiến hương trầm tỏa ra mạnh mẽ hơn như một liều thuốc xoa dịu tinh thần. Đó không chỉ là trang sức, đó là một <strong>người bạn tri kỷ</strong> biết lắng nghe và chữa lành.
+                    </p>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-leaf text-[#C5A059] mt-1"></i>
+                            <div>
+                                <span class="font-bold text-[#5D4037]">Tính "Mộc" Ấm Áp:</span>
+                                <span class="text-sm text-gray-600">Nuôi dưỡng nhân khí, không lạnh lẽo như kim loại hay đá.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-infinity text-[#C5A059] mt-1"></i>
+                            <div>
+                                <span class="font-bold text-[#5D4037]">Hương Thơm Vĩnh Cửu:</span>
+                                <span class="text-sm text-gray-600">Càng đeo lâu, hạt trầm càng bóng đẹp và đậm hương.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT SHOWCASE -->
+    <section id="san-pham" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl serif font-bold mb-4 text-[#2D2420]">Tuyệt Phẩm Trầm Thủy</h2>
+                <div class="w-20 h-1 bg-[#C5A059] mx-auto"></div>
+                <p class="mt-4 text-gray-500">Những tạo tác mang năng lượng bình an.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Product 1 -->
+                <div class="group reveal cursor-pointer">
+                    <div class="relative overflow-hidden rounded-lg mb-4 bg-[#F5F5F5] h-[350px] flex items-center justify-center">
+                        <div class="absolute inset-0 bg-[#5D4037]/5 group-hover:bg-[#5D4037]/10 transition z-10"></div>
+                        <i class="fa-solid fa-ring text-8xl text-[#5D4037] opacity-20 group-hover:scale-110 transition duration-500"></i>
+                        <span class="absolute top-4 left-4 bg-[#C5A059] text-white text-xs font-bold px-3 py-1 uppercase tracking-wide z-20">Best Seller</span>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl serif font-bold mb-1 group-hover:text-[#C5A059] transition">Vòng Trầm 108 Hạt - Tĩnh Tâm</h3>
+                        <p class="text-gray-500 text-sm mb-3">Hương dịu nhẹ - Xua tan phiền não</p>
+                        <p class="text-[#C5A059] font-bold text-lg mb-4">1.800.000₫</p>
+                        <button class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="group reveal delay-100 cursor-pointer">
+                    <div class="relative overflow-hidden rounded-lg mb-4 bg-[#F5F5F5] h-[350px] flex items-center justify-center">
+                        <div class="absolute inset-0 bg-[#5D4037]/5 group-hover:bg-[#5D4037]/10 transition z-10"></div>
+                        <i class="fa-solid fa-fire-burner text-8xl text-[#5D4037] opacity-20 group-hover:scale-110 transition duration-500"></i>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl serif font-bold mb-1 group-hover:text-[#C5A059] transition">Nhang Nụ Thanh Khiết</h3>
+                        <p class="text-gray-500 text-sm mb-3">Dùng cho thiền định & trà đạo</p>
+                        <p class="text-[#C5A059] font-bold text-lg mb-4">650.000₫</p>
+                        <button class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="group reveal delay-200 cursor-pointer">
+                    <div class="relative overflow-hidden rounded-lg mb-4 bg-[#F5F5F5] h-[350px] flex items-center justify-center">
+                        <div class="absolute inset-0 bg-[#5D4037]/5 group-hover:bg-[#5D4037]/10 transition z-10"></div>
+                        <i class="fa-solid fa-hand-holding-droplet text-8xl text-[#5D4037] opacity-20 group-hover:scale-110 transition duration-500"></i>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl serif font-bold mb-1 group-hover:text-[#C5A059] transition">Tinh Dầu Trầm Lão</h3>
+                        <p class="text-gray-500 text-sm mb-3">100% Nguyên Chất</p>
+                        <p class="text-[#C5A059] font-bold text-lg mb-4">2.500.000₫</p>
+                        <button class="w-full border border-[#2D2420] py-2 rounded uppercase text-xs font-bold hover:bg-[#2D2420] hover:text-white transition">Xem Chi Tiết</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GEMINI AI CONSULTANT -->
+    <section id="tu-van-ai" class="py-20 relative overflow-hidden text-white bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2026&auto=format&fit=crop');">
+        <div class="absolute inset-0 bg-[#5D4037]/90"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <span class="inline-block bg-[#C5A059]/20 text-[#C5A059] px-4 py-1 rounded-full text-sm font-bold mb-4 border border-[#C5A059]/50 backdrop-blur-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Hỗ Trợ Bởi Gemini AI
+                    </span>
+                    <!-- UPDATED: Title -->
+                    <h2 class="text-3xl md:text-5xl serif font-bold mb-6">Tử Vi AI</h2>
+                    <p class="text-gray-300 text-lg">
+                        Nhập năm sinh và mong muốn để nhận lời khuyên chọn vật phẩm phù hợp nhất.
+                    </p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-2xl shadow-2xl ai-glow">
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-[#C5A059] text-sm font-bold mb-2 uppercase">Bạn sinh năm nào?</label>
+                            <input type="number" id="ai-year" placeholder="VD: 1985, 1990..." class="w-full bg-black/30 border border-white/20 text-white p-4 rounded-lg focus:outline-none focus:border-[#C5A059] transition">
+                        </div>
+                        <div>
+                            <label class="block text-[#C5A059] text-sm font-bold mb-2 uppercase">Mong muốn của bạn?</label>
+                            <select id="ai-intent" class="w-full bg-black/30 border border-white/20 text-white p-4 rounded-lg focus:outline-none focus:border-[#C5A059] transition [&>option]:text-black">
+                                <option value="Cầu tài lộc, kinh doanh thuận lợi">💰 Cầu tài lộc, kinh doanh</option>
+                                <option value="Bình an, sức khỏe, giảm stress">🌿 Bình an, sức khỏe, ngủ ngon</option>
+                                <option value="Quà tặng cao cấp cho sếp/đối tác">🎁 Quà biếu sếp/đối tác</option>
+                                <option value="Trừ tà, tẩy uế nhà cửa">🏠 Trừ tà, tẩy uế nhà mới</option>
+                                <option value="Thời trang, đẳng cấp cá nhân">✨ Thời trang & Đẳng cấp</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button onclick="consultAI()" id="ai-btn" class="w-full btn-primary py-4 text-lg font-bold uppercase tracking-widest flex items-center justify-center gap-2 mb-6">
+                        <span>Phân Tích & Gợi Ý Ngay</span>
+                        <i class="fa-solid fa-sparkles"></i>
+                    </button>
+
+                    <!-- AI Result Container -->
+                    <div id="ai-result" class="hidden bg-[#FFFCF5] text-[#2D2420] p-6 rounded-lg border-l-4 border-[#C5A059]">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-[#5D4037] rounded-full flex-shrink-0 flex items-center justify-center text-[#C5A059]">
+                                <i class="fa-solid fa-leaf text-xl"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h4 class="font-bold serif text-lg text-[#5D4037] mb-2">Lời Khuyên Cho Bạn:</h4>
+                                <div id="ai-content" class="markdown-content text-sm leading-relaxed text-gray-700">
+                                    <!-- Content will be injected here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW FEATURE: AI WISH GENERATOR (Sứ Giả Lời Chúc) -->
+    <section id="loi-chuc-ai" class="py-20 bg-[#FFFCF5] border-t border-[#C5A059]/20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <!-- Left Content -->
+                <div class="lg:w-1/2 reveal">
+                    <span class="text-[#C5A059] font-bold tracking-widest text-sm uppercase mb-2 block">Quà Tặng Tâm Hồn</span>
+                    <h2 class="text-3xl md:text-4xl serif font-bold mb-6 text-[#2D2420]">Sứ Giả Lời Chúc AI <i class="fa-solid fa-feather-pointed ml-2 text-[#C5A059]"></i></h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Món quà Trầm Hương sẽ trọn vẹn hơn với những dòng tâm tình sâu sắc. Hãy để AI giúp bạn soạn những lời chúc ý nghĩa hoặc những vần thơ tao nhã để gửi trao đến người trân quý.
+                    </p>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-[#C5A059]/20">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[#5D4037] text-sm font-bold mb-2">Người nhận là ai?</label>
+                                <select id="wish-recipient" class="w-full bg-[#F9F9F9] border border-gray-200 p-3 rounded focus:outline-none focus:border-[#C5A059] transition text-sm">
+                                    <option value="Cha Mẹ/Ông Bà">Cha Mẹ / Ông Bà (Thể hiện hiếu đạo)</option>
+                                    <option value="Sếp/Đối Tác">Sếp / Đối Tác (Sang trọng, tôn trọng)</option>
+                                    <option value="Vợ/Chồng/Người Yêu">Vợ Chồng / Người Yêu (Lãng mạn, gắn kết)</option>
+                                    <option value="Bạn Bè/Tri Kỷ">Bạn Bè / Tri Kỷ (Thân tình, tri âm)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[#5D4037] text-sm font-bold mb-2">Thông điệp muốn gửi?</label>
+                                <input type="text" id="wish-intent" placeholder="VD: Cầu sức khỏe, Chúc thăng tiến, Cảm ơn..." class="w-full bg-[#F9F9F9] border border-gray-200 p-3 rounded focus:outline-none focus:border-[#C5A059] transition text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[#5D4037] text-sm font-bold mb-2">Hình thức:</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="wish-type" value="lời chúc văn xuôi" checked class="accent-[#C5A059] w-4 h-4">
+                                        <span class="ml-2 text-sm text-gray-600">Lời chúc văn xuôi</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="radio" name="wish-type" value="bài thơ 4 câu" class="accent-[#C5A059] w-4 h-4">
+                                        <span class="ml-2 text-sm text-gray-600">Thơ 4 câu</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button onclick="generateWish()" id="wish-btn" class="w-full btn-primary mt-2 py-3 text-sm uppercase tracking-widest flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
+                                <span>Soạn Lời Chúc</span>
+                                <i class="fa-solid fa-pen-fancy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Result Display -->
+                <div class="lg:w-1/2 w-full reveal delay-200">
+                    <div class="relative max-w-md mx-auto aspect-[3/4] bg-white shadow-2xl rounded-lg p-8 flex flex-col items-center justify-center text-center border-8 border-double border-[#C5A059]/30 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]">
+                        <!-- Decorative Elements -->
+                        <div class="absolute top-4 left-4 text-[#C5A059] opacity-50"><i class="fa-solid fa-quote-left text-2xl"></i></div>
+                        <div class="absolute bottom-4 right-4 text-[#C5A059] opacity-50"><i class="fa-solid fa-quote-right text-2xl"></i></div>
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#5D4037] rounded-full flex items-center justify-center border-4 border-white shadow-lg text-[#C5A059] z-10">
+                            <i class="fa-solid fa-envelope-open-text text-2xl"></i>
+                        </div>
+
+                        <!-- Result Text -->
+                        <div id="wish-result-container" class="mt-4">
+                            <h3 class="text-[#5D4037] font-bold serif text-xl mb-6">Thông Điệp Của Bạn</h3>
+                            <!-- Custom Font Class Applied Here -->
+                            <div id="wish-content" class="wish-font text-[#2D2420] text-lg min-h-[150px] flex items-center justify-center">
+                                "Hương trầm tỏa ngát tâm an,<br>
+                                Gửi trao trân quý muôn vàn yêu thương."<br>
+                                <span class="text-sm text-gray-400 not-italic mt-4 block font-sans">(Hãy nhập thông tin để AI sáng tác)</span>
+                            </div>
+                        </div>
+
+                        <!-- Copy Button -->
+                        <button onclick="copyWish()" class="mt-8 text-xs text-[#5D4037] hover:text-[#C5A059] flex items-center gap-1 transition uppercase font-bold tracking-wider">
+                            <i class="fa-regular fa-copy"></i> Sao chép nội dung
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INVESTMENT / VALUE SECTION -->
+    <section id="dau-tu" class="py-20 bg-[#2D2420] text-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2 reveal">
+                    <!-- UPDATED TITLE -->
+                    <h2 class="text-3xl md:text-4xl serif font-bold mb-6 text-white leading-tight">
+                        Di Sản Tích Luỹ <br>
+                        <span class="text-[#C5A059]">"Giá Trị Vượt Thời Gian"</span>
+                    </h2>
+                    <p class="text-gray-400 mb-6 text-lg">
+                        Trong một thế giới đầy biến động, sự bình an trong tâm hồn chính là tài sản quý giá nhất. Trầm Thủy Hương không chỉ là vật phẩm tích sản với giá trị tăng theo thời gian, mà còn là khoản đầu tư cho sức khỏe tinh thần của chính bạn.
+                    </p>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="border border-white/10 p-4 rounded hover:border-[#C5A059] transition">
+                            <div class="text-3xl font-bold text-[#C5A059] mb-1">Vô Giá</div>
+                            <div class="text-sm text-gray-400">Giá trị tinh thần</div>
+                        </div>
+                        <div class="border border-white/10 p-4 rounded hover:border-[#C5A059] transition">
+                            <div class="text-3xl font-bold text-[#C5A059] mb-1">100+</div>
+                            <div class="text-sm text-gray-400">Năm tuổi trầm</div>
+                        </div>
+                    </div>
+                    <a href="#lien-he" class="btn-primary inline-block">Đăng Ký Tư Vấn</a>
+                </div>
+                
+                <div class="lg:w-1/2 w-full bg-white/5 p-6 rounded-2xl border border-white/10 reveal delay-200 backdrop-blur-sm">
+                    <h4 class="text-center mb-4 font-semibold text-gray-300">Biểu Đồ Tăng Trưởng Giá Trầm (Tham Khảo)</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="investmentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW TESTIMONIALS SECTION -->
+    <section class="py-20 bg-[#FFFCF5]">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl serif font-bold mb-4 text-[#2D2420]">Khách Hàng Nói Gì?</h2>
+                <div class="w-20 h-1 bg-[#C5A059] mx-auto"></div>
+                <p class="mt-4 text-gray-500">Những câu chuyện thật từ người yêu trầm.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Review 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 reveal relative">
+                    <i class="fa-solid fa-quote-left text-4xl text-[#C5A059] opacity-20 absolute top-4 left-4"></i>
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-[#5D4037] rounded-full flex items-center justify-center text-[#C5A059] font-bold text-xl mr-4">
+                            H
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[#2D2420]">Chị Hoàng Lan</h4>
+                            <p class="text-xs text-gray-500">Hà Nội</p>
+                        </div>
+                    </div>
+                    <div class="flex text-[#C5A059] mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"Mình mua tặng mẹ vòng trầm 108 hạt, mẹ khen mùi thơm dịu, đeo vào thấy ngủ ngon hơn hẳn. Hộp quà đóng gói rất sang trọng, đúng chất cao cấp."</p>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 reveal delay-100 relative">
+                    <i class="fa-solid fa-quote-left text-4xl text-[#C5A059] opacity-20 absolute top-4 left-4"></i>
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-[#5D4037] rounded-full flex items-center justify-center text-[#C5A059] font-bold text-xl mr-4">
+                            T
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[#2D2420]">Anh Tuấn</h4>
+                            <p class="text-xs text-gray-500">TP. Hồ Chí Minh</p>
+                        </div>
+                    </div>
+                    <div class="flex text-[#C5A059] mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"Là dân kinh doanh, mình rất coi trọng phong thủy. Từ khi đặt thác khói trầm này ở văn phòng, cảm giác không gian nhẹ nhàng hẳn, khách đến cũng khen mùi hương rất tinh tế."</p>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 reveal delay-200 relative">
+                    <i class="fa-solid fa-quote-left text-4xl text-[#C5A059] opacity-20 absolute top-4 left-4"></i>
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-[#5D4037] rounded-full flex items-center justify-center text-[#C5A059] font-bold text-xl mr-4">
+                            M
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[#2D2420]">Chị Minh Anh</h4>
+                            <p class="text-xs text-gray-500">Đà Nẵng</p>
+                        </div>
+                    </div>
+                    <div class="flex text-[#C5A059] mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"Tư vấn viên rất nhiệt tình và am hiểu. Mình nhờ AI chọn quà sinh nhật cho chồng, kết quả anh ấy rất thích. Chắc chắn sẽ ủng hộ dài dài!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION / FOOTER -->
+    <section id="lien-he" class="py-20 bg-white border-t border-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="bg-[#2D2420] rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                <div class="md:w-1/2 p-10 md:p-16 flex flex-col justify-center text-white">
+                    <h2 class="text-3xl md:text-4xl serif font-bold mb-4">Kết Nối Với Sự Bình Yên</h2>
+                    <p class="text-gray-300 mb-8">
+                        Đừng ngần ngại liên hệ với chúng tôi để tìm được vật phẩm Trầm Thủy Hương ưng ý nhất cho hành trình tâm linh của bạn.
+                    </p>
+                    <ul class="space-y-4 text-base text-gray-400 mb-8">
+                        <li class="flex items-center"><i class="fa-solid fa-phone mr-3 text-[#C5A059] text-xl"></i> <span class="text-white text-lg font-bold">0931.343455</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-location-dot mr-3 text-[#C5A059] text-xl mt-1"></i> <span>4 Bis Tôn Đức Thắng, P. Sài Gòn, TP. Hồ Chí Minh</span></li>
+                    </ul>
+                </div>
+                
+                <div class="md:w-1/2 bg-white p-10 md:p-16">
+                    <!-- ADDED ID TO FORM -->
+                    <form id="contact-form" onsubmit="submitForm(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Họ tên</label>
+                            <input type="text" name="ho_ten" class="w-full bg-gray-50 border border-gray-200 p-3 rounded focus:outline-none focus:border-[#C5A059]" placeholder="Nhập họ tên của bạn" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Số điện thoại</label>
+                            <input type="tel" name="so_dien_thoai" class="w-full bg-gray-50 border border-gray-200 p-3 rounded focus:outline-none focus:border-[#C5A059]" placeholder="Nhập SĐT để nhận tư vấn" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Sản phẩm quan tâm</label>
+                            <select name="san_pham" class="w-full bg-gray-50 border border-gray-200 p-3 rounded focus:outline-none focus:border-[#C5A059]">
+                                <option>Vòng tay Trầm Hương</option>
+                                <option>Nhang/Nụ Trầm</option>
+                                <option>Tư vấn Phong Thủy</option>
+                            </select>
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full btn-primary mt-4 py-4 uppercase tracking-widest text-sm shadow-lg">Gửi Yêu Cầu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#2D2420] text-white/40 py-8 text-center text-xs">
+        <p>© 2024 Trầm Thủy Hương. All rights reserved.</p>
+        <p class="mt-2">Thuần Khiết - Tĩnh Lặng - Bình An</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- GOOGLE SHEET INTEGRATION ---
+        // BƯỚC QUAN TRỌNG: Thay thế URL bên dưới bằng Web App URL của bạn sau khi deploy Apps Script
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-O63FyYH6GEOnQBG-z7wRg00apSl1jcB7V-Xq01VjIRoRw_Y4FgsdLTcStIzgrmKRKQ/exec";
+
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('submit-btn');
+            const form = document.getElementById('contact-form');
+            const originalText = btn.innerText;
+
+            // Kiểm tra URL (để tránh lỗi nếu người dùng quên dán link)
+            if (GOOGLE_SCRIPT_URL.includes("DÁN_LINK")) {
+                alert("Vui lòng cài đặt Google Apps Script và dán link vào file HTML!");
+                return;
+            }
+
+            // Loading state
+            btn.disabled = true;
+            btn.innerText = "ĐANG GỬI...";
+
+            // Lấy dữ liệu
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            // Gửi dữ liệu qua fetch
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                mode: 'no-cors', // Quan trọng: Google Script yêu cầu no-cors hoặc xử lý redirect phức tạp
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(() => {
+                alert("Cảm ơn! Trầm Thủy Hương đã nhận được thông tin và sẽ liên hệ sớm.");
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert("Có lỗi xảy ra. Vui lòng thử lại hoặc gọi hotline.");
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            });
+        }
+
+        // --- GEMINI AI CONSULTANT SCRIPT ---
+        async function consultAI() {
+            const yearInput = document.getElementById('ai-year').value;
+            const intentInput = document.getElementById('ai-intent').value;
+            const resultDiv = document.getElementById('ai-result');
+            const contentDiv = document.getElementById('ai-content');
+            const btn = document.getElementById('ai-btn');
+            
+            if (!yearInput || yearInput < 1920 || yearInput > 2025) {
+                alert("Vui lòng nhập năm sinh hợp lệ!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span>Đang kết nối năng lượng...</span><span class="loading-dots"></span>';
+            resultDiv.classList.add('hidden');
+            
+            const prompt = `
+            Bạn là một chuyên gia tại Trầm Thủy Hương. Hãy đưa ra "Lời Khuyên Cho Bạn" (khoảng 150 từ) dựa trên:
+            - Năm sinh: ${yearInput}
+            - Mong muốn: ${intentInput}
+            
+            Yêu cầu:
+            1. Xác định mệnh ngũ hành.
+            2. Giải thích tại sao Trầm Hương (Tính Mộc/Dương) lại giúp cân bằng năng lượng cho người này.
+            3. Đề xuất sản phẩm từ Trầm Thủy Hương.
+            4. Giọng văn: Nhẹ nhàng, sâu sắc, hướng về sự bình an và tĩnh lặng.
+            5. Dùng Markdown để format đẹp.
+            `;
+
+            const apiKey = "AIzaSyBsxRozvByJKp8o-tuYT7FgevuNGxD1qhE"; 
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content) {
+                    const rawText = data.candidates[0].content.parts[0].text;
+                    contentDiv.innerHTML = marked.parse(rawText);
+                    resultDiv.classList.remove('hidden');
+                    resultDiv.classList.add('fade-in-up');
+                } else {
+                    contentDiv.innerHTML = "Vũ trụ đang bận rộn. Vui lòng thử lại sau giây lát.";
+                    resultDiv.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error("Lỗi:", error);
+                contentDiv.innerHTML = "Đã có lỗi kết nối. Vui lòng thử lại.";
+                resultDiv.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>Phân Tích & Gợi Ý Ngay</span><i class="fa-solid fa-sparkles"></i>';
+            }
+        }
+
+        // --- GEMINI AI WISH GENERATOR SCRIPT ---
+        async function generateWish() {
+            const recipient = document.getElementById('wish-recipient').value;
+            const intent = document.getElementById('wish-intent').value;
+            const type = document.querySelector('input[name="wish-type"]:checked').value;
+            const contentDiv = document.getElementById('wish-content');
+            const btn = document.getElementById('wish-btn');
+
+            if (!intent) {
+                alert("Vui lòng nhập thông điệp bạn muốn gửi gắm!");
+                return;
+            }
+
+            // UI Loading
+            btn.disabled = true;
+            btn.innerHTML = '<span>Đang mài mực...</span><span class="loading-dots"></span>';
+            contentDiv.classList.add('opacity-50');
+
+            const prompt = `
+            Bạn là một nhà văn tinh tế tại Trầm Thủy Hương. Hãy viết một ${type} ngắn gọn để viết lên thiệp tặng quà Trầm Hương.
+            - Người nhận: ${recipient}
+            - Thông điệp chính: ${intent}
+            
+            Yêu cầu:
+            1. Văn phong: Trang trọng, ấm áp, sâu sắc, mang màu sắc văn hóa Á Đông.
+            2. Nhắc đến các hình ảnh như: hương thơm, làn khói, bình an, tĩnh tâm, hoặc sự vĩnh cửu của trầm.
+            3. Độ dài: Tối đa 4 câu.
+            4. Chỉ trả về nội dung lời chúc, không có phần mở đầu/kết thúc thừa.
+            `;
+
+            const apiKey = "AIzaSyBsxRozvByJKp8o-tuYT7FgevuNGxD1qhE"; 
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+
+                if (data.candidates && data.candidates[0].content) {
+                    const wishText = data.candidates[0].content.parts[0].text.trim();
+                    contentDiv.innerHTML = wishText.replace(/\n/g, '<br>');
+                } else {
+                    contentDiv.innerHTML = "Máy mực đang khô, vui lòng thử lại sau.";
+                }
+            } catch (error) {
+                console.error("Lỗi:", error);
+                contentDiv.innerHTML = "Lỗi kết nối. Vui lòng thử lại.";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>Soạn Lời Chúc</span><i class="fa-solid fa-pen-fancy"></i>';
+                contentDiv.classList.remove('opacity-50');
+            }
+        }
+
+        function copyWish() {
+            const text = document.getElementById('wish-content').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Đã sao chép lời chúc vào bộ nhớ tạm!");
+            });
+        }
+
+        // --- Chart.js ---
+        const ctx = document.getElementById('investmentChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(197, 160, 89, 0.5)'); 
+        gradient.addColorStop(1, 'rgba(197, 160, 89, 0)');   
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'Giá trị thị trường',
+                    data: [100, 120, 135, 160, 185, 220],
+                    borderColor: '#C5A059',
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#C5A059'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#888' } },
+                    y: { display: false }
+                }
+            }
+        });
+
+        // --- Animations ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-md', 'bg-white/95');
+                header.classList.remove('bg-white/90');
+            } else {
+                header.classList.remove('shadow-md', 'bg-white/95');
+                header.classList.add('bg-white/90');
+            }
+        });
+        
+        // --- Mobile Menu Toggle ---
+        function toggleMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
