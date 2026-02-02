@@ -644,7 +644,34 @@ function scrollToOrder(productName) {
             });
         }
 
-        // --- GEMINI AI CONSULTANT SCRIPT ---
+// --- CÁC SCRIPT CŨ (Google Sheet, Chart) GIỮ NGUYÊN ---
+        
+        // --- CẤU HÌNH CHUNG CHO AI ---
+        const GEMINI_API_KEY = "AIzaSyBsxRozvByJKp8o-tuYT7FgevuNGxD1qhE"; 
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        // Hàm gọi API chung để tránh lặp code
+        async function callGeminiAPI(prompt) {
+            try {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await response.json();
+                if (response.ok && data.candidates && data.candidates.length > 0) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    console.error("Lỗi API:", data);
+                    return null;
+                }
+            } catch (error) {
+                console.error("Lỗi kết nối:", error);
+                return null;
+            }
+        }
+
+        // --- TỬ VI AI ---
         async function consultAI() {
             const yearInput = document.getElementById('ai-year').value;
             const intentInput = document.getElementById('ai-intent').value;
@@ -668,45 +695,28 @@ function scrollToOrder(productName) {
             
             Yêu cầu:
             1. Xác định mệnh ngũ hành.
-            2. Giải thích tại sao Trầm Hương (Tính Mộc/Dương) lại giúp cân bằng năng lượng cho người này.
+            2. Giải thích tại sao Trầm Hương (Tính Mộc/Dương) lại giúp cân bằng năng lượng.
             3. Đề xuất sản phẩm từ Trầm Thủy Hương.
-            4. Giọng văn: Nhẹ nhàng, sâu sắc, hướng về sự bình an và tĩnh lặng.
+            4. Giọng văn: Nhẹ nhàng, sâu sắc, hướng về sự bình an.
             5. Dùng Markdown để format đẹp.
             `;
 
-            const apiKey = "AIzaSyBsxRozvByJKp8o-tuYT7FgevuNGxD1qhE"; 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const result = await callGeminiAPI(prompt);
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-
-                const data = await response.json();
-                
-                if (data.candidates && data.candidates[0].content) {
-                    const rawText = data.candidates[0].content.parts[0].text;
-                    contentDiv.innerHTML = marked.parse(rawText);
-                    resultDiv.classList.remove('hidden');
-                    resultDiv.classList.add('fade-in-up');
-                } else {
-                    contentDiv.innerHTML = "Vũ trụ đang bận rộn. Vui lòng thử lại sau giây lát.";
-                    resultDiv.classList.remove('hidden');
-                }
-
-            } catch (error) {
-                console.error("Lỗi:", error);
-                contentDiv.innerHTML = "Đã có lỗi kết nối. Vui lòng thử lại.";
+            if (result) {
+                contentDiv.innerHTML = marked.parse(result);
                 resultDiv.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span>Phân Tích & Gợi Ý Ngay</span><i class="fa-solid fa-sparkles"></i>';
+                resultDiv.classList.add('fade-in-up');
+            } else {
+                contentDiv.innerHTML = "Vũ trụ đang bận rộn. Vui lòng thử lại sau giây lát.";
+                resultDiv.classList.remove('hidden');
             }
+            
+            btn.disabled = false;
+            btn.innerHTML = '<span>Phân Tích & Gợi Ý Ngay</span><i class="fa-solid fa-sparkles"></i>';
         }
 
-        // --- GEMINI AI WISH GENERATOR SCRIPT ---
+        // --- LỜI CHÚC AI ---
         async function generateWish() {
             const recipient = document.getElementById('wish-recipient').value;
             const intent = document.getElementById('wish-intent').value;
@@ -719,58 +729,29 @@ function scrollToOrder(productName) {
                 return;
             }
 
-            // UI Loading
             btn.disabled = true;
             btn.innerHTML = '<span>Đang mài mực...</span><span class="loading-dots"></span>';
             contentDiv.classList.add('opacity-50');
 
             const prompt = `
-            Bạn là một nhà văn tinh tế tại Trầm Thủy Hương. Hãy viết một ${type} ngắn gọn để viết lên thiệp tặng quà Trầm Hương.
+            Bạn là nhà văn tại Trầm Thủy Hương. Viết một ${type} ngắn gọn để viết lên thiệp tặng quà Trầm Hương.
             - Người nhận: ${recipient}
-            - Thông điệp chính: ${intent}
-            
-            Yêu cầu:
-            1. Văn phong: Trang trọng, ấm áp, sâu sắc, mang màu sắc văn hóa Á Đông.
-            2. Nhắc đến các hình ảnh như: hương thơm, làn khói, bình an, tĩnh tâm, hoặc sự vĩnh cửu của trầm.
-            3. Độ dài: Tối đa 4 câu.
-            4. Chỉ trả về nội dung lời chúc, không có phần mở đầu/kết thúc thừa.
+            - Thông điệp: ${intent}
+            Yêu cầu: Trang trọng, ấm áp, nhắc đến hương trầm/bình an. Tối đa 4 câu.
             `;
 
-            const apiKey = "AIzaSyBsxRozvByJKp8o-tuYT7FgevuNGxD1qhE"; 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const result = await callGeminiAPI(prompt);
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-
-                const data = await response.json();
-
-                if (data.candidates && data.candidates[0].content) {
-                    const wishText = data.candidates[0].content.parts[0].text.trim();
-                    contentDiv.innerHTML = wishText.replace(/\n/g, '<br>');
-                } else {
-                    contentDiv.innerHTML = "Máy mực đang khô, vui lòng thử lại sau.";
-                }
-            } catch (error) {
-                console.error("Lỗi:", error);
-                contentDiv.innerHTML = "Lỗi kết nối. Vui lòng thử lại.";
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span>Soạn Lời Chúc</span><i class="fa-solid fa-pen-fancy"></i>';
-                contentDiv.classList.remove('opacity-50');
+            if (result) {
+                contentDiv.innerHTML = result.trim().replace(/\n/g, '<br>');
+            } else {
+                contentDiv.innerHTML = "Máy mực đang khô, vui lòng thử lại sau.";
             }
-        }
 
-        function copyWish() {
-            const text = document.getElementById('wish-content').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Đã sao chép lời chúc vào bộ nhớ tạm!");
-            });
+            btn.disabled = false;
+            btn.innerHTML = '<span>Soạn Lời Chúc</span><i class="fa-solid fa-pen-fancy"></i>';
+            contentDiv.classList.remove('opacity-50');
         }
-
         // --- Chart.js ---
         const ctx = document.getElementById('investmentChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 300);
@@ -848,6 +829,7 @@ function scrollToOrder(productName) {
     </a>
 </div>
 </html>
+
 
 
 
