@@ -14,7 +14,7 @@
     
     <title>Trầm Thủy Hương - Thuần Khiết, Tĩnh Lặng, Bình An</title>
     
-    <!-- Preload ảnh bìa để tăng tốc độ tải -->
+    <!-- Preload ảnh bìa -->
     <link rel="preload" as="image" href="generated_image_4eff2817-d309-44e0-9dec-602d2aec6b8c.png">
 
     <!-- Tailwind CSS -->
@@ -105,7 +105,6 @@
 
     <!-- HERO SECTION -->
     <section class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#2D2420]">
-        <!-- Ảnh banner sử dụng thẻ img để tối ưu SEO và tốc độ -->
         <img src="generated_image_4eff2817-d309-44e0-9dec-602d2aec6b8c.png" alt="Banner Trầm Hương" class="absolute inset-0 w-full h-full object-cover opacity-80">
         <div class="absolute inset-0 bg-gradient-to-t from-[#2D2420] via-transparent to-transparent"></div>
         
@@ -477,7 +476,7 @@
         </div>
     </section>
 
-    <!-- Trust Badges & Footer -->
+    <!-- Trust Badges -->
     <div class="mt-4 flex justify-center gap-6 text-xs text-gray-400">
         <span class="flex items-center"><i class="fa-solid fa-shield-halved mr-1"></i> Bảo hành mùi hương trọn đời</span>
         <span class="flex items-center"><i class="fa-solid fa-check-circle mr-1"></i> Kiểm định thật giả</span>
@@ -489,13 +488,11 @@
         <p class="mt-2">Thuần Khiết - Tĩnh Lặng - Bình An</p>
     </footer>
 
-    <!-- Floating Contact Button -->
+    <!-- Floating Contact Button - MOVED INSIDE BODY FOR VALIDITY -->
     <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-3">
-        <!-- Zalo -->
         <a href="https://zalo.me/0931343455" target="_blank" class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-600 transition hover:scale-110 animate-bounce">
             <span class="font-bold text-xs">Zalo</span>
         </a>
-        <!-- Call -->
         <a href="tel:0931343455" class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-red-600 transition hover:scale-110">
             <i class="fa-solid fa-phone"></i>
         </a>
@@ -552,7 +549,8 @@
         }
 
         // --- GEMINI AI CONFIGURATION ---
-        const GEMINI_API_KEY = "AIzaSyB7ycToMxqdzxHKyESnGaWgmQdqhxLt5Mo"; // KHOÁ API MỚI
+        // ĐÃ CẬP NHẬT KEY MỚI: AIzaSyB7ycToMxqdzxHKyESnGaWgmQdqhxLt5Mo
+        const GEMINI_API_KEY = "AIzaSyB7ycToMxqdzxHKyESnGaWgmQdqhxLt5Mo"; 
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
         // Hàm gọi API chung
@@ -725,4 +723,3 @@
     </script>
 </body>
 </html>
-
