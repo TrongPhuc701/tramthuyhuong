@@ -530,7 +530,7 @@
         // --- GEMINI AI CONFIGURATION (ĐÃ SỬA LỖI) ---
         // Sử dụng hàm trim() để loại bỏ khoảng trắng thừa nếu có khi copy paste
         const GEMINI_API_KEY = "AIzaSyCLtDq_yvWCvrmjIBo-DYr4gzVgjWKPAR4".trim(); 
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
 
         // Hàm gọi API chung (Đã nâng cấp để bắt lỗi chi tiết)
         async function callGeminiAPI(prompt) {
@@ -719,4 +719,5 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
     </script>
 </body>
 </html>
+
 
