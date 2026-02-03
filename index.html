@@ -527,20 +527,14 @@
             });
         }
 
-        // --- GEMINI AI CONFIGURATION (BẢO MẬT KEY + DÙNG MODEL 2.5) ---
-        // 1. Cắt Key làm 2 phần để robot Google không phát hiện và khóa
-        const part1 = "AIzaSy";
-        const part2 = "ATuUtjMpD-xUOYuMG1XCMOlGIvWBeLme0";
-        
-        // 2. Ghép lại khi chạy
-        const GEMINI_API_KEY = (part1 + part2).trim(); 
-        
-        // 3. Sử dụng bản model 2.5 theo yêu cầu của bạn
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // --- GEMINI API CONFIGURATION (QUA CLOUDFLARE WORKER) ---
+        // Đã xóa hoàn toàn GEMINI_API_KEY ở đây để bảo mật tuyệt đối.
+        // Link Worker của bạn (Lấy từ ảnh bạn gửi)
+        const GEMINI_API_URL = "https://api-tram-huong.trongphuc7012005.workers.dev"; 
 
-        // Hàm gọi API chung
+        // Hàm gọi API (Chỉ thay đổi URL gọi về Cloudflare)
         async function callGeminiAPI(prompt) {
-            console.log("Đang gọi API tới:", GEMINI_API_URL); // Debug đường dẫn
+            console.log("Đang gọi bảo vệ qua Cloudflare..."); 
             try {
                 const response = await fetch(GEMINI_API_URL, {
                     method: 'POST',
@@ -550,10 +544,9 @@
                 
                 const data = await response.json();
                 
-                // Kiểm tra lỗi từ phía Google
+                // Kiểm tra lỗi từ phía Google (được Cloudflare chuyển tiếp về)
                 if (!response.ok) {
                     console.error("API Error Response:", data);
-                    // Hiển thị lỗi cụ thể ra alert để dễ debug
                     let errorMsg = "Lỗi kết nối AI!";
                     if (data.error && data.error.message) {
                         errorMsg += "\nChi tiết: " + data.error.message;
